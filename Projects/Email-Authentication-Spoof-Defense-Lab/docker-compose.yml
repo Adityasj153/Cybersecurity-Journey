@@ -1,0 +1,77 @@
+services:
+  dns:
+    image: ubuntu/bind9:latest
+    container_name: lab-dns
+    hostname: dns
+    volumes:
+      - ./bind/named.conf.local:/etc/bind/named.conf.local
+      - ./bind/named.conf.options:/etc/bind/named.conf.options
+      - ./bind/zones:/etc/bind/zones
+    networks:
+      lab-net:
+        ipv4_address: 172.28.0.10
+    restart: unless-stopped
+
+  mail-sender:
+    image: ghcr.io/docker-mailserver/docker-mailserver:latest
+    container_name: mail-sender
+    hostname: mail.lab.local
+    domainname: lab.local
+    dns:
+      - 172.28.0.10
+    ports:
+      - "25:25"
+      - "587:587"
+    volumes:
+      - ./sender/mail-data:/var/mail
+      - ./sender/mail-state:/var/mail-state
+      - ./sender/mail-logs:/var/log/mail
+      - ./sender/config:/tmp/docker-mailserver
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - ENABLE_OPENDKIM=1
+      - ENABLE_OPENDMARC=1
+      - ENABLE_POLICYD_SPF=1
+      - PERMIT_DOCKER=network
+      - ONE_DIR=1
+    cap_add:
+      - NET_ADMIN
+    networks:
+      lab-net:
+        ipv4_address: 172.28.0.20
+    restart: unless-stopped
+
+  mail-receiver:
+    image: ghcr.io/docker-mailserver/docker-mailserver:latest
+    container_name: mail-receiver
+    hostname: mail.receiver.local
+    domainname: receiver.local
+    dns:
+      - 172.28.0.10
+    ports:
+      - "2525:25"
+    volumes:
+      - ./receiver/mail-data:/var/mail
+      - ./receiver/mail-state:/var/mail-state
+      - ./receiver/mail-logs:/var/log/mail
+      - ./receiver/config:/tmp/docker-mailserver
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - ENABLE_OPENDKIM=1
+      - ENABLE_OPENDMARC=1
+      - ENABLE_POLICYD_SPF=1
+      - PERMIT_DOCKER=none
+      - ONE_DIR=1
+    cap_add:
+      - NET_ADMIN
+    networks:
+      lab-net:
+        ipv4_address: 172.28.0.30
+    restart: unless-stopped
+
+networks:
+  lab-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/24

@@ -4,7 +4,7 @@ A fully self-hosted lab demonstrating how SPF, DKIM, and DMARC actually work —
 
 No cloud services. No paid tools. No purchased domain. Every layer — DNS, mail transport, DKIM signing, DMARC evaluation — is self-hosted and inspectable.
 
-📄 **Full narrative write-up:** [link to your Medium article]
+📄 **[Full narrative write-up:] (https://medium.com/@adityasinghkv153/i-built-an-email-spoofing-lab-to-understand-spf-dkim-dmarc-ebf7093c061e?sharedUserId=adityasinghkv153)**
 
 ---
 

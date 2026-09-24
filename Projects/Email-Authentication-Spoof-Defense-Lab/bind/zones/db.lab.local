@@ -1,0 +1,9 @@
+$TTL 3600
+@ IN SOA dns.lab.local. admin.lab.local. ( 2026091802 3600 1800 604800 3600 )
+@ IN NS dns.lab.local.
+dns IN A 172.28.0.10
+@ IN MX 10 mail.lab.local.
+mail IN A 172.28.0.20
+@ IN TXT "v=spf1 ip4:172.28.0.20 -all"
+mail._domainkey IN TXT ( "v=DKIM1; h=sha256; k=rsa; " "p=<your generated public key>" )
+_dmarc IN TXT "v=DMARC1; p=reject; adkim=s; aspf=s; rua=mailto:dmarc-reports@lab.local"

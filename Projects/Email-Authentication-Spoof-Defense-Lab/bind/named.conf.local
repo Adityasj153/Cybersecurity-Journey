@@ -1,0 +1,8 @@
+zone "lab.local" {
+    type master;
+    file "/etc/bind/zones/db.lab.local";
+};
+zone "receiver.local" {
+    type master;
+    file "/etc/bind/zones/db.receiver.local";
+};
